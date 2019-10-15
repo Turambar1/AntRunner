@@ -9,7 +9,9 @@ using AntRunner.Interface;
 
 namespace AntRunner.Models
 {
-    public static class AntLoader
+   using System.Runtime.Loader;
+
+   public static class AntLoader
     {
         private static IList<IWrapperLoader> _wrappers;
         public static IList<IWrapperLoader> Wrappers => _wrappers ?? (_wrappers = GetWrappers());
@@ -34,7 +36,9 @@ namespace AntRunner.Models
         {
             try
             {
-                var d = AppDomain.CreateDomain($"LoadingDomain-{DateTime.Now.Ticks}", AppDomain.CurrentDomain.Evidence, new AppDomainSetup { ApplicationBase = Environment.CurrentDirectory });
+                //var d = AppDomain.CreateDomain($"LoadingDomain-{DateTime.Now.Ticks}", AppDomain.CurrentDomain.Evidence, new AppDomainSetup { ApplicationBase = Environment.CurrentDirectory });
+                var d = AppDomain.CreateDomain($"LoadingDomain-{DateTime.Now.Ticks}");
+                
                 d.Load(AssemblyName.GetAssemblyName(typeof(Ant).Assembly.Location));
                 d.Load(AssemblyName.GetAssemblyName(typeof(Newtonsoft.Json.JsonConverter).Assembly.Location));
                 var loader = GetLoader(filename);
@@ -69,7 +73,7 @@ namespace AntRunner.Models
                 try
                 {
                     var path = Path.Combine(baseFolder.DirectoryName, "Wrappers", wrapper.Path);
-                    var assembly = Assembly.Load(AssemblyName.GetAssemblyName(path));
+                    var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
                     var loader = Activator.CreateInstance(assembly.GetType(wrapper.Type)) as IWrapperLoader;
                     if (loader == null) continue;
                     result.Add(loader);

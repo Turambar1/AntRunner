@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <DocumentationFile>AntRunner.Game.Interface.xml</DocumentationFile>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
      <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
      <UseWPF>true</UseWPF>
