@@ -30,7 +30,7 @@ namespace AntRunner.Wrapper.Js
             {
                 var info = new FileInfo(antPath);
                 _workingDirectory = info.DirectoryName;
-                var assemblyInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
+                var assemblyInfo = new FileInfo(Assembly.GetCallingAssembly().Location);
                 var runningFolder = assemblyInfo.DirectoryName;
                 if (runningFolder == null || _workingDirectory == null) throw new NullReferenceException();
 

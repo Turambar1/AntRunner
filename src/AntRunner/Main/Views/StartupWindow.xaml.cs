@@ -7,9 +7,12 @@ using AntRunner.Models;
 
 namespace AntRunner.Main.Views
 {
-    public partial class StartupWindow
+   using System.Runtime.Loader;
+   using AssemblyHandling;
+
+   public partial class StartupWindow
     {
-        public StartupWindow(FileSystemInfo map, IDictionary<AntProxy, AppDomain> ants, bool isDebug = false)
+        public StartupWindow(FileSystemInfo map, IDictionary<AntProxy, IAntContext> ants, bool isDebug = false)
         {
             InitializeComponent();
             DataContext = new StartupViewModel(this, map, ants, isDebug);

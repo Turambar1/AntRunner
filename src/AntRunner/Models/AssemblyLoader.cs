@@ -11,7 +11,7 @@ namespace AntRunner.Models
 
         public AssemblyLoaderData MakeLoaderData(string filename)
         {
-            return new AssemblyLoaderData {AssemblyName = AssemblyName.GetAssemblyName(filename) };
+            return new AssemblyLoaderData {AssemblyName = AssemblyName.GetAssemblyName(filename), AssemblyPath = filename};
         }
 
         public Func<Ant, AntAction> GetAction()

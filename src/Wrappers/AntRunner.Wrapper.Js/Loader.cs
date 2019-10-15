@@ -14,6 +14,7 @@ namespace AntRunner.Wrapper.Js
             return new AssemblyLoaderData
             {
                 AssemblyName = Assembly.GetExecutingAssembly().GetName(),
+                AssemblyPath = this.GetType().Assembly.Location,
                 TypeString = "AntRunner.Wrapper.Js.JsAnt",
                 ConstructorParameters = new object[] { filename }
             };

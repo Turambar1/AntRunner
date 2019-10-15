@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using AntRunner.Interface;
 
 namespace AntRunner.Models
 {
    using System.Runtime.Loader;
+   using AssemblyHandling;
 
    public static class AntLoader
     {
@@ -32,24 +32,27 @@ namespace AntRunner.Models
             return Wrappers.Any(x => x.Extensions.Any(y => y.Equals(extension, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public static AntProxy Load(string filename, out AppDomain domain)
+        public static AntProxy Load(string filename, out IAntContext domain)
         {
             try
             {
                 //var d = AppDomain.CreateDomain($"LoadingDomain-{DateTime.Now.Ticks}", AppDomain.CurrentDomain.Evidence, new AppDomainSetup { ApplicationBase = Environment.CurrentDirectory });
-                var d = AppDomain.CreateDomain($"LoadingDomain-{DateTime.Now.Ticks}");
+                //var d = AppDomain.CreateDomain($"LoadingDomain-{DateTime.Now.Ticks}");
                 
-                d.Load(AssemblyName.GetAssemblyName(typeof(Ant).Assembly.Location));
-                d.Load(AssemblyName.GetAssemblyName(typeof(Newtonsoft.Json.JsonConverter).Assembly.Location));
+                //d.Load(AssemblyName.GetAssemblyName(typeof(Ant).Assembly.Location));
+                //d.Load(AssemblyName.GetAssemblyName(typeof(Newtonsoft.Json.JsonConverter).Assembly.Location));
+                var context = new CollectibleAssemblyLoadContext();
+
+                domain = context;
+
                 var loader = GetLoader(filename);
                 if (loader == null) throw new Exception("Invalid file type");
 
                 var data = loader.MakeLoaderData(filename);
                 // ReSharper disable once AssignNullToNotNullAttribute
-                var antProxy = (AntProxy)d.CreateInstanceAndUnwrap(Assembly.GetExecutingAssembly().FullName, typeof(AntProxy).FullName);
-                antProxy.LoadAssembly(data);
+                var antProxy = (AntProxy)Activator.CreateInstance(typeof(AntProxy));
+                antProxy.LoadAssembly(data, context);
 
-                domain = d;
                 antProxy.SetGetAction(loader.GetAction());
                 return antProxy;
             }

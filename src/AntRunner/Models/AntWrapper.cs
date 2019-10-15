@@ -12,14 +12,17 @@ using ItemColor = AntRunner.Interface.ItemColor;
 
 namespace AntRunner.Models
 {
-    public class AntWrapper : NotifyBaseModel, IDisposable
+   using System.Runtime.Loader;
+   using AssemblyHandling;
+
+   public class AntWrapper : NotifyBaseModel, IDisposable
     {
         private Guid _id = Guid.NewGuid();
         public Guid ID => _id;
 
         public event EventHandler<ShootEventHandler> ShootEventHandler;
         private readonly BackgroundWorker _antWorkerThread = new BackgroundWorker();
-        private readonly AppDomain _domain;
+        private readonly IAntContext _domain;
 
         private string _name;
         public string Name => _name ?? (_name = Ant.Name);
@@ -116,7 +119,7 @@ namespace AntRunner.Models
             set => SetValue(ref _bombs, value);
         }
 
-        public AntWrapper(AntProxy ant, AppDomain domain, ItemColor color)
+        public AntWrapper(AntProxy ant, IAntContext domain, ItemColor color)
         {
             Ant = ant;
             _domain = domain;
@@ -257,7 +260,7 @@ namespace AntRunner.Models
                 //Do Nothing
             }
 
-            AppDomain.Unload(_domain);
+            _domain.Unload();
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();

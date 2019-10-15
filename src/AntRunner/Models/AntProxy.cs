@@ -6,7 +6,9 @@ using AntRunner.Interface;
 
 namespace AntRunner.Models
 {
-    public class AntProxy : MarshalByRefObject, IDisposable
+   using AssemblyHandling;
+
+   public class AntProxy : MarshalByRefObject, IDisposable
     {
         private Ant _ant;
         private Func<Ant, AntAction> _getAction;
@@ -35,12 +37,13 @@ namespace AntRunner.Models
             _ant.Tick(state);
         }
 
-        public void LoadAssembly(AssemblyLoaderData data)
+        public void LoadAssembly(AssemblyLoaderData data, IAntContext context)
         {
             try
             {
-                var assembly = Assembly.Load(data.AssemblyName);
-                var antType = string.IsNullOrEmpty(data.TypeString) ?
+               var assembly = context.LoadAssembly(data.AssemblyPath);
+               
+               var antType = string.IsNullOrEmpty(data.TypeString) ?
                     assembly.GetExportedTypes().FirstOrDefault(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(Ant))) :
                     assembly.GetType(data.TypeString);
 
@@ -48,8 +51,6 @@ namespace AntRunner.Models
                 {
                     throw new Exception("Could not find class derived from AntRunner.Interface.Ant");
                 }
-
-                AppDomain.CurrentDomain.AssemblyResolve += CreateHandler(new FileInfo(assembly.Location).DirectoryName);
 
                 if (!(Activator.CreateInstance(antType, data.ConstructorParameters) is Ant ant))
                 {
@@ -67,23 +68,6 @@ namespace AntRunner.Models
         public void SetGetAction(Func<Ant, AntAction> getAction)
         {
             _getAction = getAction;
-        }
-
-        private static ResolveEventHandler CreateHandler(string directoryName)
-        {
-            var dllLookup = Directory.GetFiles(directoryName, "*.dll").ToDictionary(Path.GetFileNameWithoutExtension, y => y);
-            return (sender, args) =>
-            {
-                var name = args.Name.Split(',')[0];
-                if (name.Contains(".resources"))
-                    return null;
-
-                if (dllLookup.ContainsKey(name))
-                {
-                    return Assembly.Load(AssemblyName.GetAssemblyName(dllLookup[name]));
-                }
-                return Assembly.Load(args.Name);
-            };
         }
 
         public void Dispose()

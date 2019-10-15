@@ -13,6 +13,7 @@ namespace AntRunner.Wrapper.Ruby
             return new AssemblyLoaderData
             {
                 AssemblyName = Assembly.GetExecutingAssembly().GetName(),
+                AssemblyPath = this.GetType().Assembly.Location,
                 TypeString = "AntRunner.Wrapper.Ruby.RubyAnt",
                 ConstructorParameters = new object[] { filename }
             };

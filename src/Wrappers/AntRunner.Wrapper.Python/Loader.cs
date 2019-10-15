@@ -13,6 +13,7 @@ namespace AntRunner.Wrapper.Python
             return new AssemblyLoaderData
             {
                 AssemblyName = Assembly.GetExecutingAssembly().GetName(),
+                AssemblyPath = this.GetType().Assembly.Location,
                 TypeString = "AntRunner.Wrapper.Python.PythonAnt",
                 ConstructorParameters = new object[] { filename }
             };

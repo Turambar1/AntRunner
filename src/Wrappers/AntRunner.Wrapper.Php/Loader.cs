@@ -13,6 +13,7 @@ namespace AntRunner.Wrapper.Php
             return new AssemblyLoaderData
             {
                 AssemblyName = Assembly.GetExecutingAssembly().GetName(),
+                AssemblyPath = this.GetType().Assembly.Location,
                 TypeString = "AntRunner.Wrapper.Php.PhpAnt",
                 ConstructorParameters = new object[] {filename}
             };

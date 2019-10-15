@@ -8,7 +8,9 @@ using AntRunner.Models;
 
 namespace AntRunner
 {
-    public partial class App
+   using AssemblyHandling;
+
+   public partial class App
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
@@ -18,10 +20,10 @@ namespace AntRunner
         }
 
 
-        private static bool ParseArgs(IEnumerable<string> args, out FileSystemInfo map, out IDictionary<AntProxy, AppDomain> ants, bool checkSubFolder = true)
+        private static bool ParseArgs(IEnumerable<string> args, out FileSystemInfo map, out IDictionary<AntProxy, IAntContext> ants, bool checkSubFolder = true)
         {
             map = null;
-            var antList = new Dictionary<AntProxy, AppDomain>();
+            var antList = new Dictionary<AntProxy, IAntContext>();
             var debug = false;
 
             foreach (var a in args)

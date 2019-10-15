@@ -14,7 +14,10 @@ using AntRunner.Models;
 
 namespace AntRunner.Main.ViewModels
 {
-    public class StartupViewModel : NotifyBaseModel
+   using System.Runtime.Loader;
+   using AssemblyHandling;
+
+   public class StartupViewModel : NotifyBaseModel
     {
         private ICommand _startGameCommand, _loadMapCommand, _toggleDebugCommand;
 
@@ -33,7 +36,7 @@ namespace AntRunner.Main.ViewModels
 
         public Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
-        public StartupViewModel(StartupWindow control, FileSystemInfo map, IDictionary<AntProxy, AppDomain> ants, bool isDebug = false)
+        public StartupViewModel(StartupWindow control, FileSystemInfo map, IDictionary<AntProxy, IAntContext> ants, bool isDebug = false)
         {
             _control = control;
             IsDebug = isDebug;
@@ -76,7 +79,7 @@ namespace AntRunner.Main.ViewModels
             }
         }
 
-        private void LoadAnts(IDictionary<AntProxy, AppDomain> ants)
+        private void LoadAnts(IDictionary<AntProxy, IAntContext> ants)
         {
             if (ants == null) return;
             foreach (var ant in ants)

@@ -20,6 +20,11 @@ namespace AntRunner.Interface
         public AssemblyName AssemblyName { get; set; }
 
         /// <summary>
+        /// Filepath of the assembly.
+        /// </summary>
+        public string AssemblyPath { get; set; }
+
+        /// <summary>
         /// Object array of the parameters needed for the ant constructor.
         /// </summary>
         public object[] ConstructorParameters { get; set; }
