@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows;
 
 namespace AntRunner.Game.Interface.Models
 {
-    public abstract class NotifyBaseModel : INotifyPropertyChanged
+   using System.Windows;
+
+   public abstract class NotifyBaseModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -28,6 +27,7 @@ namespace AntRunner.Game.Interface.Models
 
         protected void RunOnUIThread(Action action)
         {
+           
             Application.Current.Dispatcher.BeginInvoke(new Action(action));
         }
     }
